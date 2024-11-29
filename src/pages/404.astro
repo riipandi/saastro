@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+---
+
+<Layout title="404 Not Found">
+    <div class="mx-auto flex size-full flex-col py-32 bg-gray-950">
+        <header class="mb-auto w-full"></header>
+        <div class="px-4 py-10 text-center sm:px-6 lg:px-8">
+            <h1 class="block text-7xl font-bold text-white sm:text-8xl">404</h1>
+            <div class="mt-8 text-lg text-gray-400 sm:mt-10">
+                <p class="leading-8">Oops, something went wrong.</p>
+                <p class="leading-8">Sorry, we couldn&rsquo;t find your page.</p>
+            </div>
+            <div class="mt-8 lg:mt-14 flex flex-col items-center justify-center">
+                <a
+                    href="/"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm
+                        font-semibold text-brand-400 ring-offset-white transition-all hover:text-brand-600 focus:outline-none focus:ring-1
+                        focus:ring-brand-400 focus:ring-offset-2 dark:ring-offset-slate-900 sm:w-auto">
+                    <svg class="h-2.5 w-2.5" width={20} height={20} viewBox="0 0 16 16" fill="none">
+                        <path
+                            d="M11.2792 1.64001L5.63273 7.28646C5.43747 7.48172 5.43747 7.79831 5.63273 7.99357L11.2792 13.64"
+                            stroke="currentColor"
+                            stroke-width={2}
+                            stroke-linecap="round"/>
+                    </svg>
+                    Back to main page
+                </a>
+            </div>
+        </div>
+    </div>
+</Layout>

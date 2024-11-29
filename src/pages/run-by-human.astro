@@ -1,0 +1,57 @@
+---
+import * as Lucide from 'lucide-astro'
+import Layout from '../layouts/BaseLayout.astro';
+import Header from '../components/header.astro';
+import Footer from '../components/footer.astro';
+---
+
+<!-- This page is inspired by Shayan from LogSnag (https://logsnag.com/run-by-a-human) -->
+
+<Layout title="Run by a human - Saastro">
+  <Header />
+  <main class="relative bg-gray-950">
+    <div class="pt-32 pb-12 flex flex-col px-4 mx-auto max-w-[1344px] sm:px-6 lg:px-8">
+      <div class="mx-auto flex size-full items-center justify-start min-h-[calc(100vh-30rem)]">
+        <div class="max-w-4xl">
+          <h1 class="mb-4 font-bold text-gray-100 text-4xl">Run by a Human</h1>
+          <article class="space-y-4 leading-7 prose prose-lg text-gray-200 border-b pb-6 border-gray-400">
+            <p class="text-brand-400 text-lg">
+              Saastro is a passion project, crafted and managed by a solo developer.
+            </p>
+            <p>
+              Starting from scratch, Saastro has been built without external funding. Every decision, every feature, and every investment has been made with careful consideration to ensure it meets your needs. The journey has been challenging but incredibly fulfilling.
+            </p>
+            <p>
+              As an independent product, Saastro is free from corporate constraints and investor pressures. This independence allows for agility, quick adaptation to changes, and a focus on what truly matters - you, the user. Decisions are made with your best interests at heart, not those of a boardroom.
+            </p>
+            <p>
+              Managing Saastro alone presents its own set of challenges, but it also means a deep connection with both the product and its users. When you choose Saastro, you're not just using a tool; you're experiencing a vision for a straightforward and user-friendly website platform.
+            </p>
+            <p>
+              My promise is to deliver a solution that addresses your needs while providing a smooth and enjoyable experience. Rest assured, every email, question, or feedback you send is personally read and responded to by me - not an automated system or a support team.
+            </p>
+            <p>
+              Thank you for choosing Saastro and supporting independent products. I am excited to continue this journey with you, enhancing Saastro every day, and always aiming to exceed your expectations.
+            </p>
+
+            <div class="flex items-center space-x-4 py-2">
+              <img src="https://avatars.githubusercontent.com/u/921834?v=4" class="size-12 rounded-full border border-gray-50" alt="Aris Ripandi" />
+              <p class="italic leading-6">
+                Sincerely, <br /> <a href="/x-riipandi" target="_blank" rel="noopener noreferrer" class="inline-flex font-medium text-brand-500 transition-all duration-200 hover:text-brand-600 focus:text-brand-600">Aris Ripandi</a>
+              </p>
+            </div>
+        </article>
+        <div class="text-gray-200 mt-7">
+          <p class="text-sm">
+            This page was inspired by
+            <a href="https://logsnag.com/run-by-a-human" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-500 transition-all duration-200 hover:text-brand-600 focus:text-brand-600">
+              <span>Shayan from LogSnag</span>
+              <Lucide.ExternalLink class="size-4 ml-1" stroke-width="1.8"/>
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

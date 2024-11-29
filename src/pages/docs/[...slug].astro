@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+type DocEntry = CollectionEntry<'docs'>;
+type Props = {
+  entry: DocEntry;
+} | {
+  redirect: string;
+};
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+
+  // Generate paths untuk dokumen
+  const docPaths = docs.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry } satisfies Props
+  }));
+
+  // Generate redirects untuk section
+  const sections = [...new Set(docs.map(doc => doc.data.section))].filter(Boolean);
+  const sectionPaths = sections.map(section => {
+    const sectionDocs = docs
+      .filter(doc => doc.data.section === section)
+      .sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+
+    return {
+      params: { slug: section.toLowerCase().replace(/\s+/g, '-') },
+      props: { redirect: `/docs/${sectionDocs[0].slug}` } satisfies Props
+    };
+  });
+
+  return [...docPaths, ...sectionPaths];
+}
+
+const props = Astro.props;
+
+// Handle redirect untuk section
+if ('redirect' in props) {
+  return Astro.redirect(props.redirect);
+}
+
+const { entry } = props;
+const { Content } = await entry.render();
+
+// Get all docs untuk navigasi
+const allDocs = await getCollection('docs');
+const sortedDocs = allDocs.sort((a, b) => {
+  // Sort berdasarkan sectionOrder
+  const sectionOrderDiff = (a.data.sectionOrder || 99) - (b.data.sectionOrder || 99);
+  if (sectionOrderDiff !== 0) return sectionOrderDiff;
+
+  // Sort berdasarkan nama section
+  const sectionDiff = (a.data.section || '').localeCompare(b.data.section || '');
+  if (sectionDiff !== 0) return sectionDiff;
+
+  // Sort berdasarkan order dalam section
+  return (a.data.order || 99) - (b.data.order || 99);
+});
+
+const currentIndex = sortedDocs.findIndex(doc => doc.slug === entry.slug);
+const prevDoc = currentIndex > 0 ? sortedDocs[currentIndex - 1] : undefined;
+const nextDoc = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : undefined;
+---
+
+<DocsLayout
+  frontmatter={entry.data}
+  prevDoc={prevDoc}
+  nextDoc={nextDoc}
+>
+  <Content />
+</DocsLayout>

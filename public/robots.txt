@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://squelify.com/sitemap-index.xml

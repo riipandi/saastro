@@ -1,0 +1,129 @@
+---
+import * as Lucide from 'lucide-astro'
+import { getCollection } from "astro:content";
+
+import Layout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/header.astro';
+import Footer from '../../components/footer.astro';
+
+const articles = await getCollection("changelog", ({ id }: { id: string }) => {
+  return id;
+});
+
+const filteredArticles = articles.sort(
+  (a: { data: { pubDate: Date } }, b: { data: { pubDate: Date } }) =>
+    b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+const options: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+};
+
+// Group updates by year
+const updatesByYear = filteredArticles.reduce((acc, article) => {
+  const year = article.data.pubDate.getFullYear();
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(article);
+  return acc;
+}, {} as Record<number, typeof filteredArticles>);
+
+function generateSlug(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+---
+
+<Layout title="Changelog - Saastro">
+  <Header />
+  <main class="relative bg-gray-950">
+    <div class="pt-32 pb-4 flex flex-col px-4 mx-auto max-w-[1344px] sm:px-6 lg:px-8">
+      <div class="mx-auto flex size-full min-h-[calc(100vh-30rem)]">
+        <!-- Sidebar with quick navigation -->
+        <aside class="hidden lg:block w-64 pr-8">
+          <div class="sticky top-28">
+            <h2 class="text-lg font-semibold text-gray-100 mb-4">Quick Navigation</h2>
+            <nav class="space-y-2">
+              {Object.keys(updatesByYear).map((year) => (
+                <a href={`#year-${year}`} class="block text-gray-400 hover:text-brand-400 transition-colors">
+                  {year} ({updatesByYear[parseInt(year)].length} updates)
+                </a>
+              ))}
+            </nav>
+          </div>
+        </aside>
+
+        <div class="flex-1 max-w-3xl">
+          <div class="flex items-center justify-between mb-8">
+            <h1 class="font-bold text-gray-100 text-4xl">Changelog</h1>
+            <div class="flex items-center gap-2">
+              <a href="/changelog/rss.xml" class="inline-flex items-center gap-2 text-gray-400 hover:text-orange-400">
+                <Lucide.Rss class="size-5" />
+                <span class="hidden sm:inline">RSS Feed</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="relative text-gray-200">
+            <div class="absolute left-[21px] top-12 h-[calc(100%-3rem)] w-[2px] bg-gray-700"></div>
+            {Object.entries(updatesByYear).map(([year, yearArticles]) => (
+              <div id={`year-${year}`} class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-100 mb-6 pl-4">{year}</h2>
+                <div class="space-y-8">
+                    {yearArticles.map((update) => (
+                    <div class="relative pl-12">
+                      <div class="absolute left-0 top-1.5 size-5 rounded-full border-4 border-gray-700 bg-gray-950 ml-3"></div>
+                      <div class="group rounded-lg border border-gray-800 bg-gray-900/50 p-6 transition-all duration-200 hover:border-gray-700 hover:bg-gray-900">
+                        <div class="mb-2 flex items-center justify-between flex-wrap gap-2">
+                          <a href={`/changelog/${generateSlug(update.data.title)}`} class="text-xl font-semibold text-gray-100 hover:text-brand-400">
+                            {update.data.title}
+                          </a>
+                          <div class="flex items-center gap-3">
+                            {update.data.type && (
+                              <span class={`px-2 py-1 text-xs rounded-full ${
+                                update.data.type === 'major' ? 'bg-red-500/10 text-red-400' :
+                                update.data.type === 'feature' ? 'bg-green-500/10 text-green-400' :
+                                'bg-brand-500/10 text-brand-400'
+                              }`}>
+                                {update.data.type}
+                              </span>
+                            )}
+                            <time class="text-sm text-gray-400">
+                              {update.data.pubDate.toLocaleDateString("en-US", options)}
+                            </time>
+                          </div>
+                        </div>
+
+                        <p class="mb-4 text-gray-400">
+                          {update.data.description}
+                        </p>
+
+                        <div class="flex items-center justify-between">
+                          <a
+                            href={`/changelog/${generateSlug(update.data.title)}`}
+                            class="inline-flex items-center text-sm text-brand-400 hover:text-brand-300"
+                          >
+                            <span>Read more</span>
+                            <Lucide.ArrowRight class="ml-1 size-4" />
+                          </a>
+
+                          {update.data.author && ( <div class="text-sm text-gray-500">By {update.data.author}</div> )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+</Layout>

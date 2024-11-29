@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('docs');
+const sortedDocs = docs.sort((a, b) => {
+  const sectionOrderDiff = (a.data.sectionOrder || 99) - (b.data.sectionOrder || 99);
+  if (sectionOrderDiff !== 0) return sectionOrderDiff;
+
+  return (a.data.order || 99) - (b.data.order || 99);
+});
+
+if (!sortedDocs.length) {
+  return new Response('No documentation found', { status: 404 });
+}
+
+return Astro.redirect(`/docs/${sortedDocs[0].slug}`);
+---

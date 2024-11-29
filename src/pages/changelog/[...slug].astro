@@ -1,0 +1,137 @@
+---
+import * as Lucide from 'lucide-astro'
+import { getCollection } from "astro:content";
+import Layout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/header.astro';
+import Footer from '../../components/footer.astro';
+
+export function generateSlug(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "") // Remove special characters
+    .replace(/\s+/g, "-") // Replace spaces with dashes
+    .replace(/-+/g, '-'); // Avoid multiple dashes
+}
+
+export async function getStaticPaths() {
+  const releasesEntries = await getCollection("changelog", ({ id }) => {
+    return id;
+  });
+  return releasesEntries.map((entry) => ({
+    params: {
+      slug: generateSlug(entry.data.title)
+    },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const options: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+};
+
+
+// Get next and previous entries for navigation
+const allEntries = await getCollection("changelog");
+
+// Sort by date first to maintain correct order
+const sortedEntries = allEntries.sort((a, b) =>
+  new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+);
+
+const currentSlug = generateSlug(entry.data.title);
+const currentIndex = sortedEntries.findIndex(e =>
+  generateSlug(e.data.title) === currentSlug
+);
+
+const prevEntry = sortedEntries[currentIndex + 1];
+const nextEntry = sortedEntries[currentIndex - 1];
+---
+
+<Layout title={`${entry.data.title} - Changelog - Saastro`}>
+  <Header />
+  <main class="relative bg-gray-950">
+    <div class="pt-28 pb-4 px-4 mx-auto max-w-[1344px] sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-3xl">
+        <!-- Back button -->
+        <a href="/changelog" class="inline-flex items-center text-gray-400 hover:text-blue-400 mb-8">
+          <Lucide.ArrowLeft class="size-4 mr-2" />
+          Back to Changelog
+        </a>
+
+        <!-- Article header -->
+        <header class="mb-8">
+          <div class="flex items-center gap-3 text-sm text-gray-400 mb-4">
+            <time datetime={entry.data.pubDate.toISOString()}>
+              {entry.data.pubDate.toLocaleDateString("en-US", options)}
+            </time>
+            {entry.data.type && (
+              <span class={`px-2 py-1 text-xs rounded-full ${
+                entry.data.type === 'major' ? 'bg-red-500/10 text-red-400' :
+                entry.data.type === 'feature' ? 'bg-green-500/10 text-green-400' :
+                'bg-blue-500/10 text-blue-400'
+              }`}>
+                {entry.data.type}
+              </span>
+            )}
+          </div>
+
+          <h1 class="text-3xl font-bold text-gray-100 mb-4">
+            {entry.data.title}
+          </h1>
+
+          {entry.data.description && (
+            <p class="text-xl text-gray-400">
+              {entry.data.description}
+            </p>
+          )}
+        </header>
+
+        <!-- Article content -->
+        <article class="prose prose-invert max-w-none mb-12">
+          <Content />
+        </article>
+
+        <!-- Navigation between posts -->
+        <nav class="flex items-center justify-between border-t border-gray-800 pt-8">
+          <div class="flex-1 min-w-0 text-left">
+            {nextEntry && (
+              <a
+                href={`/changelog/${generateSlug(nextEntry.data.title)}`}
+                class="group block"
+              >
+                <div class="text-sm text-gray-500 mb-1 flex justify-start items-center gap-1 -ml-2">
+                  <Lucide.ArrowLeft class="size-4 ml-2" />
+                  <span>Next version</span>
+                </div>
+                <div class="text-base font-medium text-gray-400 group-hover:text-blue-400">
+                  {nextEntry.data.title}
+                </div>
+              </a>
+            )}
+          </div>
+          <div class="flex-1 min-w-0 text-right">
+            {prevEntry && (
+              <a
+                href={`/changelog/${generateSlug(prevEntry.data.title)}`}
+                class="group block"
+              >
+                <div class="text-sm text-gray-500 mb-1 flex justify-end items-center gap-1 -mr-2">
+                  <span>Previous version</span>
+                  <Lucide.ArrowRight class="size-4 mr-2" />
+                </div>
+                <div class="text-base font-medium text-gray-400 group-hover:text-blue-400">
+                  {prevEntry.data.title}
+                </div>
+              </a>
+            )}
+          </div>
+        </nav>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

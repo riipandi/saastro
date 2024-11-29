@@ -1,0 +1,29 @@
+---
+import * as Lucide from 'lucide-astro'
+import Layout from '../layouts/BaseLayout.astro';
+import Header from '../components/header.astro';
+import Footer from '../components/footer.astro';
+---
+
+<Layout title="Terms of Use - Saastro">
+  <Header />
+  <main class="relative bg-black">
+    <div class="pt-32 pb-12 flex flex-col px-4 mx-auto max-w-[1344px] sm:px-6 lg:px-8">
+      <div class="mx-auto flex size-full items-center justify-start min-h-[calc(100vh-30rem)]">
+        <div class="flex max-w-xl flex-col items-center p-4 text-center mx-auto">
+          <div class="mb-8">
+            <Lucide.Construction class="size-24 text-white hover:text-brand-400" />
+          </div>
+          <h1 class="mb-4 font-bold text-gray-100 text-xl">Coming Soon!</h1>
+          <div class="space-y-4 text-gray-200">
+            <p class="leading-7">
+              This page is part of our upcoming release. <br class="hidden md:inline-block" />
+              Our team is working hard to deliver a robust documentation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

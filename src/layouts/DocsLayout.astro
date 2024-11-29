@@ -1,0 +1,343 @@
+---
+import * as Lucide from 'lucide-astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description?: string;
+    section?: string;
+  };
+  prevDoc?: {
+    slug: string;
+    data: {
+      title: string;
+    };
+  };
+  nextDoc?: {
+    slug: string;
+    data: {
+      title: string;
+    };
+  };
+}
+
+type DocType = {
+  slug: string;
+  data: {
+    title: string;
+    section?: string;
+    sectionOrder?: number;
+    order?: number;
+  };
+};
+
+const { frontmatter, prevDoc, nextDoc } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+const docs = await getCollection('docs');
+const sections = docs.reduce((acc, doc) => {
+  const section = doc.data.section || 'Uncategorized';
+  if (!acc[section]) acc[section] = [];
+  acc[section].push(doc);
+  return acc;
+}, {} as Record<string, DocType[]>);
+
+const sortedSections = Object.entries(sections)
+  .sort(([a], [b]) => {
+    const orderA = sections[a][0].data.sectionOrder || 99;
+    const orderB = sections[b][0].data.sectionOrder || 99;
+    return orderA - orderB;
+  })
+  .map(([section, items]: [string, DocType[]]) => [
+    section,
+    items.sort((a, b) => (a.data.order || 99) - (b.data.order || 99))
+  ]) as [string, DocType[]][];
+---
+
+<BaseLayout title={`${frontmatter.title} - Docs - Saastro`}>
+  <div class="w-full h-screen overflow-hidden">
+    <!-- Docs Header -->
+    <header class="fixed top-0 z-30 w-full border-b border-gray-800 bg-gray-950">
+      <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-6">
+          <a href="/" class="flex items-center gap-2">
+            <img src="/images/logoipsum-244.svg" alt="Saastro" class="h-7" />
+          </a>
+          <div class="hidden items-center gap-6 sm:flex">
+            <a
+              href="/docs/introduction"
+              class:list={[
+                "text-sm transition-colors",
+                currentPath.startsWith('/docs/introduction')
+                  ? "text-brand-400 font-medium"
+                  : "text-gray-300 hover:text-brand-400"
+              ]}
+            >
+              Documentation
+            </a>
+            <a
+              href="/docs/api"
+              class:list={[
+                "text-sm transition-colors",
+                currentPath.startsWith('/docs/api')
+                  ? "text-brand-400 font-medium"
+                  : "text-gray-300 hover:text-brand-400"
+              ]}
+            >
+              API Reference
+            </a>
+            <a
+              href="/docs/examples"
+              class:list={[
+                "text-sm transition-colors",
+                currentPath.startsWith('/docs/examples')
+                  ? "text-brand-400 font-medium"
+                  : "text-gray-300 hover:text-brand-400"
+              ]}
+            >
+              Examples
+            </a>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <button
+            type="button"
+            id="command-trigger"
+            class="flex w-72 items-center gap-2 rounded-md border border-gray-800 bg-gray-900/50 px-3 py-1.5 text-sm text-gray-300 hover:border-gray-700 hover:bg-gray-900"
+          >
+            <Lucide.Search class="size-4" />
+            <span>Search docs...</span>
+            <span class="ml-auto text-xs">⌘K</span>
+          </button>
+          <a
+            href="/github"
+            target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 px-4 py-1.5 text-sm font-semibold transition-all duration-200 text-white bg-white/20 hover:bg-white/40 focus:bg-white/40 rounded-md"
+          >
+            <Lucide.Github class="size-4" />
+            <span>GitHub</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex h-screen pt-16">
+      <!-- Sidebar -->
+      <aside class="hidden w-72 shrink-0 border-r border-gray-800 bg-gray-950 lg:block">
+        <div class="sticky top-16">
+          <nav class="h-[calc(100vh-4rem)] overflow-y-auto">
+            <div class="px-4 sm:px-6 lg:px-8 py-6 space-y-8 size-full">
+              {sortedSections.map(([section, items]) => (
+                <div>
+                  <h3 class="mb-2 px-2 text-sm font-semibold text-gray-300 uppercase">{section}</h3>
+                  <ul class="space-y-1">
+                    {items.map((doc) => (
+                      <li>
+                        <a
+                          href={`/docs/${doc.slug}`}
+                          class:list={[
+                            'block rounded-md px-2 py-1 text-sm transition-colors',
+                            currentPath === `/docs/${doc.slug}`
+                              ? 'text-brand-400'
+                              : 'text-gray-400 hover:text-gray-200'
+                          ]}
+                        >
+                          {doc.data.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="flex-1 overflow-y-auto bg-gray-950">
+        <div class="mx-auto w-full container justify-center flex">
+          <div class="flex gap-8 flex-1 justify-center px-4 lg:px-8">
+            <!-- Main content -->
+            <div class="w-full max-w-4xl py-8 lg:py-12 px-2">
+              <!-- Breadcrumb -->
+              <div class="mb-8 flex items-center gap-1.5 text-sm">
+                <a
+                  href="/docs"
+                  class="text-gray-400 hover:text-brand-400 transition-colors duration-200"
+                >
+                  Docs
+                </a>
+                <Lucide.ChevronRight class="size-3.5 text-gray-600" />
+                {frontmatter.section && (
+                  <>
+                    <span class="text-gray-400">{frontmatter.section}</span>
+                    <Lucide.ChevronRight class="size-3.5 text-gray-600" />
+                  </>
+                )}
+                <span class="text-gray-400 font-medium">{frontmatter.title}</span>
+              </div>
+
+              <!-- Content header -->
+              <header class="mb-8">
+                <h1 class="mb-2 text-3xl font-bold text-gray-100">
+                  {frontmatter.title}
+                </h1>
+                {frontmatter.description && (
+                  <p class="text-lg text-gray-300">{frontmatter.description}</p>
+                )}
+              </header>
+
+              <!-- Main content -->
+              <article class="prose prose-invert max-w-none">
+                <slot />
+              </article>
+
+              <!-- Navigation between docs -->
+              <nav class="mt-16 flex items-center justify-between border-t border-gray-800 pt-8">
+                <div class="flex-1 min-w-0">
+                  {prevDoc ? (
+                    <a href={`/docs/${prevDoc.slug}`} class="group flex items-center gap-2 text-gray-300 hover:text-brand-400">
+                      <div>
+                        <div class="text-sm mb-1 flex justify-start items-center gap-1 -ml-2">
+                          <Lucide.ArrowLeft class="size-4 ml-2" />
+                          <span>Previous</span>
+                        </div>
+                        <div class="font-medium">{prevDoc.data.title}</div>
+                      </div>
+                    </a>
+                  ) : null}
+                </div>
+
+                <div class="flex-1 min-w-0 text-right">
+                  {nextDoc ? (
+                    <a href={`/docs/${nextDoc.slug}`} class="group flex items-center justify-end gap-2 text-gray-300 hover:text-brand-400">
+                      <div>
+                        <div class="text-sm mb-1 flex justify-end items-center gap-1 -mr-2">
+                          <span>Next</span>
+                          <Lucide.ArrowRight class="size-4 mr-2" />
+                        </div>
+                        <div class="font-medium">{nextDoc.data.title}</div>
+                      </div>
+                    </a>
+                  ) : null}
+                </div>
+              </nav>
+            </div>
+
+            <!-- Right sidebar -->
+            <div class="hidden xl:block w-80 shrink-0 p-4">
+              <div class="sticky top-12">
+                <!-- Table of Contents -->
+                <div class="mb-8">
+                  <h4 class="mb-4 text-sm font-semibold text-gray-300">On this page</h4>
+                  <nav class="space-y-2.5">
+                    <a href="#introduction" class="block text-sm text-gray-300 hover:text-brand-400">Introduction</a>
+                    <a href="#getting-started" class="block text-sm text-gray-300 hover:text-brand-400 pl-3">Getting Started</a>
+                    <a href="#installation" class="block text-sm text-gray-300 hover:text-brand-400 pl-3">Installation</a>
+                  </nav>
+                </div>
+
+                <!-- External Links -->
+                <div>
+                  <h4 class="mb-4 text-sm font-semibold text-gray-300">External Links</h4>
+                  <nav class="space-y-2.5">
+                    <a href="/github" class="flex items-center gap-2 text-sm text-gray-300 hover:text-brand-400">
+                      <Lucide.Github class="size-4" />
+                      <span>GitHub</span>
+                    </a>
+                    <a href="/discord" class="flex items-center gap-2 text-sm text-gray-300 hover:text-brand-400">
+                      <Lucide.MessageSquare class="size-4" />
+                      <span>Discord Community</span>
+                    </a>
+                    <a href="/twitter" class="flex items-center gap-2 text-sm text-gray-300 hover:text-brand-400">
+                      <Lucide.Twitter class="size-4" />
+                      <span>Twitter</span>
+                    </a>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Docs Footer -->
+    <footer class="border-t border-gray-800 bg-gray-950">
+      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <p class="text-center text-sm text-gray-300">
+          &copy; {new Date().getFullYear()} Saastro. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  /* Custom scrollbar untuk semua area scrollable */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: theme(colors.gray.900);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: theme(colors.gray.700);
+    border-radius: theme(borderRadius.full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: theme(colors.gray.600);
+  }
+
+  /* Scrollbar untuk Firefox */
+  * {
+    scrollbar-width: initial;
+    scrollbar-color: theme(colors.gray.500) theme(colors.gray.900);
+  }
+
+  /* Custom scrollbar for sidebar */
+  nav::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  nav::-webkit-scrollbar-thumb {
+    background: theme(colors.gray.800);
+    border-radius: theme(borderRadius.full);
+  }
+
+  nav::-webkit-scrollbar-thumb:hover {
+    background: theme(colors.gray.700);
+  }
+</style>
+
+<script>
+  function initCommandBar() {
+    const trigger = document.getElementById('command-trigger');
+
+    // Handle click
+    trigger?.addEventListener('click', () => {
+      // Trigger command bar
+      console.log('Open command bar');
+    });
+
+    // Handle keyboard shortcut
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        // Trigger command bar
+        console.log('Open command bar');
+      }
+    });
+  }
+  initCommandBar();
+</script>
