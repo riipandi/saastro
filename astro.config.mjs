@@ -1,5 +1,5 @@
+import alpine from '@astrojs/alpinejs'
 import mdx from '@astrojs/mdx'
-import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import tailwind from '@astrojs/tailwind'
 import yaml from '@rollup/plugin-yaml'
@@ -10,6 +10,8 @@ import { transformerNotationErrorLevel } from '@shikijs/transformers'
 import { transformerNotationFocus } from '@shikijs/transformers'
 import { transformerNotationHighlight } from '@shikijs/transformers'
 import { transformerNotationWordHighlight } from '@shikijs/transformers'
+import compress from 'astro-compress'
+import rename from 'astro-rename'
 import { defineConfig } from 'astro/config'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeSlug from 'rehype-slug'
@@ -20,6 +22,8 @@ const isCloudflarePages = provider === 'cloudflare_pages'
 export default defineConfig({
   site: isCloudflarePages ? env.CF_PAGES_URL : 'http://localhost:3000',
   build: { format: 'file' /* fix CloudFlare Pages trailing slash problem */ },
+  server: { port: 3000, host: '127.0.0.1' },
+  output: 'static',
   vite: {
     plugins: [yaml()],
     build: {
@@ -39,15 +43,14 @@ export default defineConfig({
   },
   prefetch: process.dev
     ? undefined
-    : {
-        prefetchAll: true,
-        defaultStrategy: 'viewport',
-      },
+    : { prefetchAll: true, defaultStrategy: 'viewport' },
   integrations: [
     mdx(),
-    react({ experimentalReactChildren: true }),
+    alpine(),
     sitemap(),
-    tailwind(),
+    tailwind({ configFile: 'tailwind.config.mjs' }),
+    rename({ rename: { prefix: 'astro-', except: ['debug', /^ea-/] } }),
+    compress({ SVG: true, Image: true, JavaScript: true }),
   ],
   markdown: {
     rehypePlugins: [

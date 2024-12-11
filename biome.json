@@ -134,6 +134,13 @@
             "**/*.css",
             "**/*.json"
         ],
-        "ignore": [".github", ".astro", ".wrangler", "public", "dist"]
+        "ignore": [
+            ".github",
+            ".astro",
+            ".wrangler",
+            "env.d.ts",
+            "public",
+            "dist"
+        ]
     }
 }

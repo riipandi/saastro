@@ -5,9 +5,57 @@ interface Props {
     error: unknown
 }
 
-const { error } = Astro.props
+const { error } = Astro.props;
 ---
 
-<Layout title="Somethings wrong">
-    <div>{error instanceof Error ? error.message : 'Unknown error'}</div>
+<Layout title="Server Error">
+    <div class="relative min-h-screen bg-gray-950">
+        <!-- Decorative gradient -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -inset-[10px] opacity-50">
+                <div class="absolute top-0 h-[40rem] w-full bg-gradient-to-b from-brand-900/30 via-transparent to-transparent"></div>
+            </div>
+        </div>
+
+        <div class="relative flex min-h-screen flex-col items-center justify-center px-4 py-32 sm:px-6 lg:px-8">
+            <!-- 500 Content -->
+            <div class="text-center">
+                <p class="text-2xl font-bold text-brand-400">500</p>
+                <h1 class="mt-4 text-3xl font-bold tracking-tight text-gray-100 sm:text-5xl">Server Error</h1>
+                <p class="mt-6 text-base leading-7 text-gray-400">
+                    {error instanceof Error ? error.message : 'Something went wrong on our end. Please try again later.'}
+                </p>
+                <div class="mt-10 flex items-center justify-center gap-x-4">
+                    <button
+                        id="backButton"
+                        class="min-w-[160px] rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-semibold text-black transition-all duration-200 hover:bg-brand-400 hover:shadow-lg hover:shadow-brand-500/20 focus:outline-none focus:ring-2 focus:ring-brand-400/50 focus:ring-offset-2 focus:ring-offset-gray-950"
+                    >
+                        Go back
+                    </button>
+                    <a
+                        href="/docs/troubleshooting"
+                        class="min-w-[160px] text-center rounded-lg border border-gray-800 bg-gray-900/80 px-5 py-2.5 text-sm font-semibold text-gray-200 transition-all duration-200 hover:bg-gray-800 hover:border-brand-500/30 hover:text-brand-400 hover:shadow-lg hover:shadow-brand-500/10 focus:outline-none focus:ring-2 focus:ring-brand-400/50 focus:ring-offset-2 focus:ring-offset-gray-950"
+                    >
+                        Troubleshooting Guide
+                    </a>
+                </div>
+            </div>
+
+            <!-- Decorative 500 background -->
+            <div class="absolute select-none pointer-events-none">
+                <h2 class="text-[20rem] font-bold text-gray-900/20">500</h2>
+            </div>
+        </div>
+    </div>
 </Layout>
+
+<script>
+  const backButton = document.getElementById('backButton');
+  backButton?.addEventListener('click', () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = '/';
+    }
+  });
+</script>

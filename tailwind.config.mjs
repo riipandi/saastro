@@ -14,7 +14,7 @@ export default {
       colors: {
         black: '#0A0A0A',
         gray: colors.stone,
-        brand: colors.amber,
+        brand: colors.sky,
       },
     },
   },

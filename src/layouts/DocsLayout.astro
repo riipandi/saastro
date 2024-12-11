@@ -2,6 +2,9 @@
 import * as Lucide from 'lucide-astro';
 import { getCollection } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+type DocType = CollectionEntry<'docs'>;
 
 interface Props {
   frontmatter: {
@@ -22,16 +25,6 @@ interface Props {
     };
   };
 }
-
-type DocType = {
-  slug: string;
-  data: {
-    title: string;
-    section?: string;
-    sectionOrder?: number;
-    order?: number;
-  };
-};
 
 const { frontmatter, prevDoc, nextDoc } = Astro.props;
 const currentPath = Astro.url.pathname;
@@ -136,10 +129,10 @@ const sortedSections = Object.entries(sections)
                     {items.map((doc) => (
                       <li>
                         <a
-                          href={`/docs/${doc.slug}`}
+                          href={`/docs/${doc.id}`}
                           class:list={[
                             'block rounded-md px-2 py-1 text-sm transition-colors',
-                            currentPath === `/docs/${doc.slug}`
+                            currentPath === `/docs/${doc.id}`
                               ? 'text-brand-400'
                               : 'text-gray-400 hover:text-gray-200'
                           ]}

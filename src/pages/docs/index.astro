@@ -13,5 +13,5 @@ if (!sortedDocs.length) {
   return new Response('No documentation found', { status: 404 });
 }
 
-return Astro.redirect(`/docs/${sortedDocs[0].slug}`);
+return Astro.redirect(`/docs/${sortedDocs[0].id}`);
 ---
