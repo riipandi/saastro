@@ -1,70 +1,80 @@
 ---
-import { getCollection, render } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
-import DocsLayout from '../../layouts/DocsLayout.astro';
+import { getCollection, render } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import DocsLayout from '@/layouts/DocsLayout.astro'
 
-type DocEntry = CollectionEntry<'docs'>;
-type Props = {
-  entry: DocEntry;
-} | {
-  redirect: string;
-};
+type DocEntry = CollectionEntry<'docs'>
+type Props =
+    | {
+          entry: DocEntry
+      }
+    | {
+          redirect: string
+      }
 
 export async function getStaticPaths() {
-  const docs = await getCollection('docs', ({ data }) => {
-    return import.meta.env.DEV || data.status === 'published'
-  });
+    const docs = await getCollection('docs', ({ data }) => {
+        return import.meta.env.DEV || data.status === 'published'
+    })
 
-  // Generate paths untuk dokumen
-  const docPaths = docs.map((entry) => ({
-    params: { slug: entry.id },
-    props: { entry } satisfies Props
-  }));
+    // Generate paths for documents
+    const docPaths = docs.map((entry) => ({
+        params: { slug: entry.id },
+        props: { entry } satisfies Props,
+    }))
 
-  // Generate redirects untuk section
-  const sections = [...new Set(docs.map(doc => doc.data.section))].filter(Boolean);
-  const sectionPaths = sections.map(section => {
-    const sectionDocs = docs
-      .filter(doc => doc.data.section === section)
-      .sort((a, b) => (a.data.order || 99) - (b.data.order || 99));
+    // Generate redirects for sections
+    const sections = [...new Set(docs.map((doc) => doc.data.section))].filter(
+        Boolean
+    )
+    const sectionPaths = sections.map((section) => {
+        const sectionDocs = docs
+            .filter((doc) => doc.data.section === section)
+            .sort((a, b) => (a.data.order || 99) - (b.data.order || 99))
 
-    return {
-      params: { slug: section?.toLowerCase().replace(/\s+/g, '-') },
-      props: { redirect: `/docs/${sectionDocs[0].id}` } satisfies Props
-    };
-  });
+        return {
+            params: { slug: section?.toLowerCase().replace(/\s+/g, '-') },
+            props: { redirect: `/docs/${sectionDocs[0].id}` } satisfies Props,
+        }
+    })
 
-  return [...docPaths, ...sectionPaths];
+    return [...docPaths, ...sectionPaths]
 }
 
-const props = Astro.props;
+const props = Astro.props
 
-// Handle redirect untuk section
+// Handle redirect for sections
 if ('redirect' in props) {
-  return Astro.redirect(props.redirect);
+    return Astro.redirect(props.redirect)
 }
 
-const { entry } = props;
-const { Content } = await render(entry);
+const { entry } = props
+const { Content } = await render(entry)
 
-// Get all docs untuk navigasi
-const allDocs = await getCollection('docs');
+// Get all docs for navigation
+const allDocs = await getCollection('docs', ({ data }) => {
+    return import.meta.env.DEV || data.status === 'published'
+})
+
 const sortedDocs = allDocs.sort((a, b) => {
-  // Sort berdasarkan sectionOrder
-  const sectionOrderDiff = (a.data.sectionOrder || 99) - (b.data.sectionOrder || 99);
-  if (sectionOrderDiff !== 0) return sectionOrderDiff;
+    const sectionOrderDiff =
+        (a.data.sectionOrder || 99) - (b.data.sectionOrder || 99)
+    if (sectionOrderDiff !== 0) return sectionOrderDiff
 
-  // Sort berdasarkan nama section
-  const sectionDiff = (a.data.section || '').localeCompare(b.data.section || '');
-  if (sectionDiff !== 0) return sectionDiff;
+    const sectionDiff = (a.data.section || '').localeCompare(
+        b.data.section || ''
+    )
+    if (sectionDiff !== 0) return sectionDiff
 
-  // Sort berdasarkan order dalam section
-  return (a.data.order || 99) - (b.data.order || 99);
-});
+    return (a.data.order || 99) - (b.data.order || 99)
+})
 
-const currentIndex = sortedDocs.findIndex(doc => doc.id === entry.id);
-const prevDoc = currentIndex > 0 ? sortedDocs[currentIndex - 1] : undefined;
-const nextDoc = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : undefined;
+const currentIndex = sortedDocs.findIndex((doc) => doc.id === entry.id)
+const prevDoc = currentIndex > 0 ? sortedDocs[currentIndex - 1] : undefined
+const nextDoc =
+    currentIndex < sortedDocs.length - 1
+        ? sortedDocs[currentIndex + 1]
+        : undefined
 ---
 
 <DocsLayout
@@ -73,5 +83,4 @@ const nextDoc = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex +
   nextDoc={nextDoc ? { slug: nextDoc.id, data: { title: nextDoc.data.title } } : undefined}
 >
   <Content />
-</DocsLayout>
 </DocsLayout>

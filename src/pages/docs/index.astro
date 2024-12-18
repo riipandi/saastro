@@ -1,17 +1,284 @@
 ---
-import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content'
+import CommandBar from '@/components/docs/CommandBar.astro'
+import DocsFooter from '@/components/docs/DocsFooter.astro'
+import DocsHeader from '@/components/docs/DocsHeader.astro'
+import DocsSidebar from '@/components/docs/DocsSidebar.astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import * as Lucide from 'lucide-astro'
 
-const docs = await getCollection('docs');
-const sortedDocs = docs.sort((a, b) => {
-  const sectionOrderDiff = (a.data.sectionOrder || 99) - (b.data.sectionOrder || 99);
-  if (sectionOrderDiff !== 0) return sectionOrderDiff;
+const currentPath = Astro.url.pathname
 
-  return (a.data.order || 99) - (b.data.order || 99);
-});
+const sortedSections = [
+    [
+        'Getting Started',
+        [
+            {
+                id: 'guides/getting-started/introduction',
+                data: { title: 'Getting Started' },
+            },
+            {
+                id: 'guides/getting-started/installation',
+                data: { title: 'Installation' },
+            },
+            {
+                id: 'guides/getting-started/quick-start',
+                data: { title: 'Quick Start' },
+            },
+        ],
+    ],
+    [
+        'Products',
+        [
+            { id: '#', data: { title: 'Web Hosting' } },
+            { id: '#', data: { title: 'Cloud Hosting' } },
+            { id: '#', data: { title: 'Domain' } },
+            { id: '#', data: { title: 'SSL' } },
+        ],
+    ],
+    [
+        'Advanced',
+        [
+            { id: '#', data: { title: 'Security' } },
+            { id: '#', data: { title: 'Backup' } },
+            { id: '#', data: { title: 'Migration' } },
+        ],
+    ],
+] as [string, CollectionEntry<'docs'>[]][]
 
-if (!sortedDocs.length) {
-  return new Response('No documentation found', { status: 404 });
-}
+const quickStartLinks = [
+    {
+        title: 'Getting Started',
+        description: 'Panduan awal menggunakan layanan Saastro',
+        href: '/docs/guides/getting-started/introduction',
+        icon: Lucide.Rocket,
+    },
+    {
+        title: 'Installation',
+        description: 'Cara instalasi dan setup awal',
+        href: '/docs/guides/getting-started/installation',
+        icon: Lucide.Download,
+    },
+    {
+        title: 'Configuration',
+        description: 'Konfigurasi dan pengaturan dasar',
+        href: '/docs/guides/getting-started/configuration',
+        icon: Lucide.Settings,
+    },
+]
 
-return Astro.redirect(`/docs/${sortedDocs[0].id}`);
+const productLinks = [
+    {
+        title: 'Web Hosting',
+        description: 'Hosting website dengan performa tinggi',
+        href: '/docs/products/web-hosting',
+        icon: Lucide.Globe,
+    },
+    {
+        title: 'Cloud Hosting',
+        description: 'Solusi cloud scalable untuk aplikasi',
+        href: '/docs/products/cloud-hosting',
+        icon: Lucide.Cloud,
+    },
+    {
+        title: 'Domain',
+        description: 'Registrasi dan manajemen domain',
+        href: '/docs/products/domain',
+        icon: Lucide.Link,
+    },
+    {
+        title: 'SSL Certificate',
+        description: 'Amankan website dengan SSL/TLS',
+        href: '/docs/products/ssl',
+        icon: Lucide.Shield,
+    },
+    {
+        title: 'Kelola DNS',
+        description: 'Konfigurasi DNS untuk domain',
+        href: '/docs/products/ssl',
+        icon: Lucide.Globe2,
+    },
+    {
+        title: 'WordPres Installation',
+        description: 'Panduan lengkap instalasi WordPress',
+        href: '/docs/products/ssl',
+        icon: Lucide.FileText,
+    },
+]
 ---
+
+<BaseLayout title="Dokumentasi">
+    <div class="w-full min-h-screen bg-white dark:bg-gray-950">
+        <DocsHeader />
+        <CommandBar />
+
+        <div class="flex min-h-[calc(100vh-4rem)] max-w-screen-2xl mx-auto">
+            <DocsSidebar sections={sortedSections} currentPath={currentPath} />
+
+            <main class="flex-1">
+                <div class="flex flex-1 pl-4 lg:pl-8 mb-4">
+                    <div class="flex flex-1 w-full justify-center pl-4">
+                        <div class="w-full max-w-7xl pt-16">
+                            <!-- Hero Section -->
+                            <section class="mb-14 text-center">
+                                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                                    Dokumentasi Saastro
+                                </h1>
+                                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                                    Pelajari cara menggunakan layanan hosting dan cloud untuk membangun website impian
+                                    Anda dengan mudah
+                                    dan cepat.
+                                </p>
+                            </section>
+
+                            <!-- Quick Start Section -->
+                            <section class="mb-14">
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">Quick Start</h2>
+                                <div class="grid md:grid-cols-3 gap-6">
+                                    {quickStartLinks.map(({ title, description, href, icon: Icon }) => (
+                                    <a href={href}
+                                        class="group p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 transition-all duration-200 hover:border-brand-500/50 hover:bg-gray-50 dark:hover:bg-gray-900">
+                                        <div class="flex items-start gap-4">
+                                            <Icon class="size-6 text-brand-600 dark:text-brand-400 mt-1 shrink-0" />
+                                            <div>
+                                                <h3
+                                                    class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-2">
+                                                    {title}
+                                                </h3>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <!-- Products Section -->
+                            <section class="mb-14">
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">Products</h2>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    {productLinks.map(({ title, description, href, icon: Icon }) => (
+                                    <a href={href}
+                                        class="group p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 transition-all duration-200 hover:border-brand-500/50 hover:bg-gray-50 dark:hover:bg-gray-900">
+                                        <div class="flex items-start gap-4">
+                                            <Icon class="size-6 text-brand-600 dark:text-brand-400 mt-1 shrink-0" />
+                                            <div>
+                                                <h3
+                                                    class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-2">
+                                                    {title}
+                                                </h3>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <!-- Resources Section -->
+                            <section class="mb-14">
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">Resources</h2>
+                                <div class="grid md:grid-cols-3 gap-6">
+                                    <a href="/docs/api-reference"
+                                        class="group p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 transition-all duration-200 hover:border-brand-500/50 hover:bg-gray-50 dark:hover:bg-gray-900">
+                                        <div class="flex items-start gap-4">
+                                            <Lucide.Code2
+                                                class="size-6 text-brand-600 dark:text-brand-400 mt-1 shrink-0" />
+                                            <div>
+                                                <h3
+                                                    class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-2">
+                                                    API Reference
+                                                </h3>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Dokumentasi lengkap
+                                                    API Saastro</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="/docs/resources/tools"
+                                        class="group p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 transition-all duration-200 hover:border-brand-500/50 hover:bg-gray-50 dark:hover:bg-gray-900">
+                                        <div class="flex items-start gap-4">
+                                            <Lucide.Wrench
+                                                class="size-6 text-brand-600 dark:text-brand-400 mt-1 shrink-0" />
+                                            <div>
+                                                <h3
+                                                    class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-2">
+                                                    Developer Tools
+                                                </h3>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Tools dan utilities
+                                                    untuk pengembangan</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="/docs/resources/examples"
+                                        class="group p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 transition-all duration-200 hover:border-brand-500/50 hover:bg-gray-50 dark:hover:bg-gray-900">
+                                        <div class="flex items-start gap-4">
+                                            <Lucide.FileCode
+                                                class="size-6 text-brand-600 dark:text-brand-400 mt-1 shrink-0" />
+                                            <div>
+                                                <h3
+                                                    class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-2">
+                                                    Code Examples
+                                                </h3>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Contoh kode dan
+                                                    implementasi</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </section>
+
+                            <!-- Community Section -->
+                            <section class="mb-14">
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">Community</h2>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <a href="/discord"
+                                        class="group p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 transition-all duration-200 hover:border-brand-500/50 hover:bg-gray-50 dark:hover:bg-gray-900">
+                                        <div class="flex items-start gap-4">
+                                            <Lucide.MessageSquare
+                                                class="size-6 text-brand-600 dark:text-brand-400 mt-1 shrink-0" />
+                                            <div>
+                                                <h3
+                                                    class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-2">
+                                                    Discord Community
+                                                </h3>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Bergabung dengan
+                                                    komunitas developer
+                                                    Saastro</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="/github"
+                                        class="group p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 transition-all duration-200 hover:border-brand-500/50 hover:bg-gray-50 dark:hover:bg-gray-900">
+                                        <div class="flex items-start gap-4">
+                                            <Lucide.Github
+                                                class="size-6 text-brand-600 dark:text-brand-400 mt-1 shrink-0" />
+                                            <div>
+                                                <h3
+                                                    class="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-2">
+                                                    GitHub Repository
+                                                </h3>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Kontribusi dan akses
+                                                    source code</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </section>
+
+                            <!-- Background Decoration -->
+                            <div class="absolute inset-0 -z-10 pointer-events-none overflow-hidden">
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl">
+                                    <div
+                                        class="absolute top-0 left-0 w-72 h-72 bg-brand-500/10 rounded-full blur-3xl" />
+                                    <div
+                                        class="absolute top-20 right-0 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <DocsFooter />
+            </main>
+        </div>
+    </div>
+</BaseLayout>

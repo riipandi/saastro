@@ -1,0 +1,72 @@
+---
+import ThemeToggle from '@/components/shared/ThemeToggle.astro'
+import * as Lucide from 'lucide-astro'
+
+const currentPath = Astro.url.pathname
+---
+
+<header class="sticky top-0 z-30 w-full border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm">
+  <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto">
+    <div class="flex items-center gap-6">
+      <a href="/" class="flex items-center gap-2">
+        <img
+            src="/images/logoipsum-244.svg"
+            class="h-7 dark:hidden"
+            alt="Saastro"
+        />
+        <img
+            src="/images/logoipsum-244.svg"
+            class="h-7 hidden dark:block"
+            alt="Saastro"
+        />
+      </a>
+
+      <nav class="hidden items-center gap-8 sm:flex px-4 sm:px-6">
+        <a
+          href="/docs/"
+          class:list={[
+            "text-sm font-medium transition-colors",
+            currentPath.startsWith("/docs/guides") || currentPath === "/docs"
+              ? "text-brand-600 dark:text-brand-400"
+              : "text-gray-600 hover:text-brand-600 dark:text-gray-300 dark:hover:text-brand-400"
+          ]}
+        >
+          Documentation
+        </a>
+        <a
+          href="/docs/api-reference/rest-api"
+          class:list={[
+            "text-sm font-medium transition-colors",
+            currentPath.startsWith("/docs/api-reference")
+              ? "text-brand-600 dark:text-brand-400"
+              : "text-gray-600 hover:text-brand-600 dark:text-gray-300 dark:hover:text-brand-400"
+          ]}
+        >
+          API Reference
+        </a>
+      </nav>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <button
+        type="button"
+        id="command-trigger"
+        class="flex w-72 items-center gap-2 rounded-md border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700"
+      >
+        <Lucide.Search class="size-4" />
+        <span>Search in docs...</span>
+        <span class="ml-auto text-xs text-gray-400 dark:text-gray-500">⌘K</span>
+      </button>
+
+      <ThemeToggle />
+
+      <a
+        href="https://github.com/domainaja/namahost-website"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+      >
+        <Lucide.Github class="size-5" />
+      </a>
+    </div>  </div>
+</header>

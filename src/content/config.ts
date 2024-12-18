@@ -7,7 +7,7 @@ import { defineCollection, reference, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 
 const blogCollection = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content/blog' }),
+  loader: glob({ pattern: '**/*.mdx', base: 'src/content/blog' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -20,11 +20,11 @@ const blogCollection = defineCollection({
 })
 
 const docsCollection = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content/docs' }),
+  loader: glob({ pattern: '**/*.mdx', base: 'src/content/docs' }),
   schema: z.object({
     title: z.string(),
-    description: z.string().optional(), // Buat opsional karena tidak semua docs perlu description
-    section: z.string().optional(), // Buat opsional karena ada docs yang mungkin tidak dalam section
+    description: z.string(),
+    section: z.string().optional(),
     sectionOrder: z.number().optional(),
     order: z.number().optional(),
     status: z.enum(['draft', 'published']).default('published'),

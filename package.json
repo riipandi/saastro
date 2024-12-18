@@ -23,7 +23,7 @@
         "@alpinejs/collapse": "^3.14.7",
         "@alpinejs/persist": "^3.14.7",
         "alpinejs": "^3.14.7",
-        "astro": "^5.0.5",
+        "astro": "^5.0.9",
         "rehype-autolink-headings": "^7.1.0",
         "rehype-slug": "^6.0.0",
         "sharp": "^0.33.5",
@@ -40,9 +40,9 @@
         "@rollup/plugin-yaml": "^4.1.2",
         "@shikijs/transformers": "^1.24.2",
         "@tailwindcss/typography": "^0.5.15",
+        "@types/alpinejs": "^3.13.11",
         "@types/alpinejs__collapse": "^3.13.4",
         "@types/alpinejs__persist": "^3.13.4",
-        "@types/alpinejs": "^3.13.11",
         "astro-compress": "^2.3.5",
         "astro-rename": "^1.1.2",
         "autoprefixer": "^10.4.20",
@@ -52,14 +52,14 @@
         "lucide-astro": "^0.468.0",
         "npm-check-updates": "17.1.11",
         "postcss": "^8.4.49",
-        "sass": "^1.82.0",
+        "sass": "^1.83.0",
         "shiki": "^1.24.2",
-        "tailwindcss-motion": "^0.4.5-beta",
-        "tailwindcss": "^3.4.16",
+        "tailwindcss": "^3.4.17",
+        "tailwindcss-motion": "0.4.5-beta",
         "typescript": "^5.7.2",
         "vite": "^6.0.3",
         "vitest": "^2.1.8",
-        "wrangler": "^3.95.0"
+        "wrangler": "^3.97.0"
     },
     "packageManager": "pnpm@9.15.0"
 }

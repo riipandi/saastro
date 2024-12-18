@@ -1,0 +1,98 @@
+---
+import * as Lucide from 'lucide-astro'
+---
+
+<div
+  id="command-modal"
+  class="hidden fixed inset-0 z-50 bg-gray-500/20 dark:bg-gray-950/80 backdrop-blur-sm"
+>
+  <div class="fixed inset-x-0 top-0 mx-auto max-w-2xl p-4 pt-16">
+    <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-2xl">
+      <!-- Search input -->
+      <div class="flex items-center gap-3 border-b border-gray-200 dark:border-gray-800 px-4 py-3">
+        <Lucide.Search class="size-5 text-gray-400" />
+        <input
+          type="text"
+          id="command-input"
+          class="flex-1 bg-transparent text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-500 focus:outline-none"
+          placeholder="Search documentation..."
+          autocomplete="off"
+        />
+        <kbd class="hidden rounded bg-gray-100 dark:bg-gray-800 px-2 py-1 text-xs text-gray-500 dark:text-gray-400 sm:block">ESC</kbd>
+      </div>
+
+      <!-- Results -->
+      <div class="max-h-[60vh] overflow-y-auto p-2">
+        <div id="search-results" class="space-y-1">
+          <!-- Results will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  class CommandBar {
+    modal: HTMLElement | null;
+    input: HTMLInputElement | null;
+    results: HTMLElement | null;
+
+    constructor() {
+      this.modal = document.getElementById('command-modal');
+      this.input = document.getElementById('command-input') as HTMLInputElement;
+      this.results = document.getElementById('search-results');
+      this.initialize();
+    }
+
+    initialize() {
+      document.getElementById('command-trigger')?.addEventListener('click', () => this.open());
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          this.open();
+        }
+        if (e.key === 'Escape') {
+          this.close();
+        }
+      });
+
+      this.modal?.addEventListener('click', (e) => {
+        if (e.target === this.modal) this.close();
+      });
+
+      this.input?.addEventListener('input', (e) => {
+        const query = (e.target as HTMLInputElement).value;
+        this.handleSearch(query);
+      });
+    }
+
+    open() {
+      this.modal?.classList.remove('hidden');
+      this.input?.focus();
+      document.body.style.overflow = 'hidden';
+    }
+
+    close() {
+      this.modal?.classList.add('hidden');
+      this.input!.value = '';
+      this.results!.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    async handleSearch(query: string) {
+      if (!query.trim()) {
+        this.results!.innerHTML = '';
+        return;
+      }
+
+      this.results!.innerHTML = `
+        <div class="px-2 py-1.5 text-sm text-gray-600 dark:text-gray-400">
+          Searching for "${query}"...
+        </div>
+      `;
+    }
+  }
+
+  new CommandBar();
+</script>

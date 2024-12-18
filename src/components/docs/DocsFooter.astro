@@ -1,0 +1,35 @@
+---
+const currentYear = new Date().getFullYear()
+---
+
+<footer class="bg-white dark:bg-gray-950 w-full">
+    <div class="flex flex-1 pl-4 lg:pl-8 py-2">
+        <div class="flex flex-1 w-full justify-center pl-4">
+            <div class="w-full max-w-7xl z-10 py-6 border-t border-gray-200 dark:border-gray-800">
+                <div class="flex flex-col items-center justify-between w-full gap-4 sm:flex-row">
+                    <p class="text-sm text-gray-600 dark:text-gray-400">&copy; {currentYear} Your Company. All rights reserved.</p>
+                    <nav class="flex items-center gap-6">
+                        <a
+                            href="/legal/privacy"
+                            class="text-sm text-gray-600 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400 transition-colors"
+                        >
+                            Privacy Policy
+                        </a>
+                        <a
+                            href="/legal/terms-of-service"
+                            class="text-sm text-gray-600 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400 transition-colors"
+                        >
+                            Terms of Service
+                        </a>
+                        <a
+                            href="/sitemap"
+                            class="text-sm text-gray-600 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400 transition-colors"
+                        >
+                            Sitemap
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

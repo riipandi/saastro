@@ -123,6 +123,25 @@
             "trailingCommas": "none"
         }
     },
+    "overrides": [
+        {
+            "include": ["*.astro"],
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnusedVariables": "off"
+                    },
+                    "style": {
+                        "useConst": "off",
+                        "useImportType": "off"
+                    }
+                }
+            },
+            "formatter": {
+                "indentWidth": 4
+            }
+        }
+    ],
     "files": {
         "maxSize": 2048000,
         "ignoreUnknown": true,
@@ -132,7 +151,8 @@
             "**/*.ts",
             "**/*.tsx",
             "**/*.css",
-            "**/*.json"
+            "**/*.json",
+            "**/*.astro"
         ],
         "ignore": [
             ".github",

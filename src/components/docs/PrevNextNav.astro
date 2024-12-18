@@ -1,0 +1,56 @@
+---
+import * as Lucide from 'lucide-astro'
+
+interface Props {
+    prevDoc?: {
+        slug: string
+        data: {
+            title: string
+        }
+    }
+    nextDoc?: {
+        slug: string
+        data: {
+            title: string
+        }
+    }
+}
+
+const { prevDoc, nextDoc } = Astro.props
+---
+
+<nav class="mt-16 flex flex-col sm:flex-row items-stretch sm:items-center justify-between border-t border-gray-200 dark:border-gray-800 pt-8 gap-4">
+  <div class="flex-1 min-w-0">
+    {prevDoc && (
+      <a
+        href={`/docs/${prevDoc.slug}`}
+        class="group flex h-full items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/10 px-5 py-2.5 text-gray-900 dark:text-gray-200 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-900 hover:border-brand-500/30 hover:text-brand-600 dark:hover:text-brand-400 hover:shadow-lg hover:shadow-brand-500/10 focus:outline-none focus:ring-2 focus:ring-brand-400/50 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-950"
+      >
+        <div class="w-full">
+          <div class="text-sm mb-1 flex justify-start items-center gap-1">
+            <Lucide.ArrowLeft class="size-4 transition-transform group-hover:-translate-x-1" />
+            <span>Previous</span>
+          </div>
+          <div class="font-medium line-clamp-1">{prevDoc.data.title}</div>
+        </div>
+      </a>
+    )}
+  </div>
+
+  <div class="flex-1 min-w-0">
+    {nextDoc && (
+      <a
+        href={`/docs/${nextDoc.slug}`}
+        class="group flex h-full items-center justify-end gap-2 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/10 px-5 py-2.5 text-gray-900 dark:text-gray-200 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-900 hover:border-brand-500/30 hover:text-brand-600 dark:hover:text-brand-400 hover:shadow-lg hover:shadow-brand-500/10 focus:outline-none focus:ring-2 focus:ring-brand-400/50 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-950"
+      >
+        <div class="w-full">
+          <div class="text-sm mb-1 flex justify-end items-center gap-1">
+            <span>Next</span>
+            <Lucide.ArrowRight class="size-4 transition-transform group-hover:translate-x-1" />
+          </div>
+          <div class="font-medium line-clamp-1 text-right">{nextDoc.data.title}</div>
+        </div>
+      </a>
+    )}
+  </div>
+</nav>

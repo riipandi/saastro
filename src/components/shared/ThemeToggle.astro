@@ -1,0 +1,23 @@
+---
+import * as Lucide from 'lucide-astro'
+---
+
+<button
+  id="theme-toggle"
+  class="p-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+  aria-label="Toggle theme"
+>
+  <Lucide.Sun class="size-5 dark:hidden" />
+  <Lucide.Moon class="size-5 hidden dark:block" />
+</button>
+
+<script>
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle?.addEventListener('click', () => {
+    const html = document.documentElement;
+    const isDark = html.classList.contains('dark');
+    html.classList.remove(isDark ? 'dark' : 'light');
+    html.classList.add(isDark ? 'light' : 'dark');
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  });
+</script>
