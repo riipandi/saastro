@@ -13,6 +13,7 @@ import { transformerNotationWordHighlight } from '@shikijs/transformers'
 import compress from 'astro-compress'
 import rename from 'astro-rename'
 import { defineConfig } from 'astro/config'
+import { resolve } from 'pathe'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeSlug from 'rehype-slug'
 import { env, isProduction, process, provider } from 'std-env'
@@ -23,6 +24,7 @@ export default defineConfig({
   site: isCloudflarePages ? env.CF_PAGES_URL : 'http://localhost:3000',
   build: { format: 'file' /* fix CloudFlare Pages trailing slash problem */ },
   server: { port: 3000, host: '127.0.0.1' },
+  outDir: resolve('.output'),
   output: 'static',
   vite: {
     plugins: [yaml()],

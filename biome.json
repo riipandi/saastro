@@ -157,6 +157,7 @@
         "ignore": [
             ".github",
             ".astro",
+            ".output",
             ".wrangler",
             "env.d.ts",
             "public",
