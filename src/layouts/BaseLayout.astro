@@ -1,9 +1,9 @@
 ---
 interface Props {
-	title: string;
+    title: string
 }
-const { title } = Astro.props;
-const baseUrl = Astro.url;
+const { title } = Astro.props
+const baseUrl = Astro.url
 ---
 
 <!doctype html>
@@ -51,7 +51,7 @@ const baseUrl = Astro.url;
     <!-- <script is:inline defer src='/script.js'></script> -->
 	</head>
 	<body>
-    <a href="#main" class="skiplink">Skip to main content</a>
+        <a href="#main" class="skiplink">Skip to main content</a>
 		<slot />
 	</bodyd>
 </html>

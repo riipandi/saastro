@@ -1,21 +1,21 @@
 ---
 // Credits: https://www.tailbits.com/components
-import Layout from '../layouts/BaseLayout.astro';
-import Header from '../components/header.astro';
-import Footer from '../components/footer.astro';
-import SectionHero from "../components/section-hero.astro";
-import SectionFeatures from "../components/section-features.astro";
-import SectionIntegration from "../components/section-integration.astro";
-import SectionFAQs from "../components/section-faqs.astro";
-import CTASection from "../components/section-cta.astro";
+import SectionCTA from '@/components/homepage/SectionCTA.astro'
+import SectionFAQs from '@/components/homepage/SectionFAQs.astro'
+import SectionFeatures from '@/components/homepage/SectionFeatures.astro'
+import SectionHero from '@/components/homepage/SectionHero.astro'
+import SectionIntegration from '@/components/homepage/SectionIntegration.astro'
+import SiteFooter from '@/components/shared/SiteFooter.astro'
+import SiteHeader from '@/components/shared/SiteHeader.astro'
+import Layout from '@/layouts/BaseLayout.astro'
 ---
 
 <Layout title="Saastro - A clean and fast Astro SaaS Starter template">
-  <Header />
+  <SiteHeader />
   <SectionHero />
   <SectionFeatures />
   <SectionIntegration />
   <SectionFAQs />
-  <CTASection />
-  <Footer />
+  <SectionCTA />
+  <SiteFooter />
 </Layout>

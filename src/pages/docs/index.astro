@@ -4,7 +4,7 @@ import CommandBar from '@/components/docs/CommandBar.astro'
 import DocsFooter from '@/components/docs/DocsFooter.astro'
 import DocsHeader from '@/components/docs/DocsHeader.astro'
 import DocsSidebar from '@/components/docs/DocsSidebar.astro'
-import BaseLayout from '@/layouts/BaseLayout.astro'
+import Layout from '@/layouts/BaseLayout.astro'
 import * as Lucide from 'lucide-astro'
 
 const currentPath = Astro.url.pathname
@@ -107,7 +107,7 @@ const productLinks = [
 ]
 ---
 
-<BaseLayout title="Dokumentasi">
+<Layout title="Dokumentasi">
     <div class="w-full min-h-screen bg-white dark:bg-gray-950">
         <DocsHeader />
         <CommandBar />
@@ -281,4 +281,4 @@ const productLinks = [
             </main>
         </div>
     </div>
-</BaseLayout>
+</Layout>

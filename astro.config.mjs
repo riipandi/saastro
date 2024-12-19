@@ -49,7 +49,9 @@ export default defineConfig({
     alpine(),
     sitemap(),
     tailwind({ configFile: 'tailwind.config.mjs' }),
-    rename({ rename: { prefix: 'astro-', except: ['debug', /^ea-/] } }),
+    rename({
+      rename: { prefix: 'astro-', except: ['debug', 'skiplink', /^ea-/] },
+    }),
     compress({ SVG: true, Image: true, JavaScript: true }),
   ],
   markdown: {

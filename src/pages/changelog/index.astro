@@ -1,45 +1,48 @@
 ---
+import { getCollection } from 'astro:content'
 import * as Lucide from 'lucide-astro'
-import { getCollection } from "astro:content";
 
-import Layout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/header.astro';
-import Footer from '../../components/footer.astro';
+import SiteFooter from '@/components/shared/SiteFooter.astro'
+import SiteHeader from '@/components/shared/SiteHeader.astro'
+import Layout from '@/layouts/BaseLayout.astro'
 
-const articles = await getCollection("changelog", ({ id }: { id: string }) => {
-  return id;
-});
+const articles = await getCollection('changelog', ({ id }: { id: string }) => {
+    return id
+})
 
 const filteredArticles = articles.sort(
-  (a: { data: { pubDate: Date } }, b: { data: { pubDate: Date } }) =>
-    b.data.pubDate.getTime() - a.data.pubDate.getTime()
-);
+    (a: { data: { pubDate: Date } }, b: { data: { pubDate: Date } }) =>
+        b.data.pubDate.getTime() - a.data.pubDate.getTime()
+)
 
 const options: Intl.DateTimeFormatOptions = {
-  year: "numeric",
-  month: "short",
-  day: "numeric",
-};
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+}
 
 // Group updates by year
-const updatesByYear = filteredArticles.reduce((acc, article) => {
-  const year = article.data.pubDate.getFullYear();
-  if (!acc[year]) acc[year] = [];
-  acc[year].push(article);
-  return acc;
-}, {} as Record<number, typeof filteredArticles>);
+const updatesByYear = filteredArticles.reduce(
+    (acc, article) => {
+        const year = article.data.pubDate.getFullYear()
+        if (!acc[year]) acc[year] = []
+        acc[year].push(article)
+        return acc
+    },
+    {} as Record<number, typeof filteredArticles>
+)
 
 function generateSlug(title: string) {
-  return title
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
+    return title
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
 }
 ---
 
 <Layout title="Changelog - Saastro">
-  <Header />
+  <SiteHeader />
   <main class="relative bg-gray-950">
     <div class="pt-32 pb-4 flex flex-col px-4 mx-auto max-w-[1344px] sm:px-6 lg:px-8">
       <div class="mx-auto flex size-full min-h-[calc(100vh-30rem)]">
@@ -124,6 +127,6 @@ function generateSlug(title: string) {
       </div>
     </div>
   </main>
-  <Footer />
+  <SiteFooter />
 </Layout>
 </Layout>
