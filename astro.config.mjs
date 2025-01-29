@@ -75,13 +75,14 @@ export default defineConfig({
     shikiConfig: {
       theme: 'css-variables',
       transformers: [
-        transformerNotationDiff(),
-        transformerNotationHighlight(),
-        transformerNotationWordHighlight(),
-        transformerNotationFocus(),
-        transformerNotationErrorLevel(),
-        transformerMetaHighlight(),
-        transformerMetaWordHighlight(),
+        // @ref: https://shiki.style/blog/v2
+        transformerNotationDiff({ matchAlgorithm: 'v3' }),
+        transformerNotationHighlight({ matchAlgorithm: 'v3' }),
+        transformerNotationWordHighlight({ matchAlgorithm: 'v3' }),
+        transformerNotationFocus({ matchAlgorithm: 'v3' }),
+        transformerNotationErrorLevel({ matchAlgorithm: 'v3' }),
+        transformerMetaHighlight({ matchAlgorithm: 'v3' }),
+        transformerMetaWordHighlight({ matchAlgorithm: 'v3' }),
       ],
     },
   },
