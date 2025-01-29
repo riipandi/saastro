@@ -2,9 +2,9 @@
 import { getCollection } from 'astro:content'
 import * as Lucide from 'lucide-astro'
 
-import SiteFooter from '@/components/shared/SiteFooter.astro'
-import SiteHeader from '@/components/shared/SiteHeader.astro'
-import Layout from '@/layouts/BaseLayout.astro'
+import SiteFooter from '#/components/shared/SiteFooter.astro'
+import SiteHeader from '#/components/shared/SiteHeader.astro'
+import Layout from '#/layouts/BaseLayout.astro'
 
 const articles = await getCollection('changelog', ({ id }: { id: string }) => {
     return id
